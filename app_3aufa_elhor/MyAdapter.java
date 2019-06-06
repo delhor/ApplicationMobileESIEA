@@ -63,15 +63,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final String name = values.get(position);
+        final String capital = values.get(position);
         holder.txtHeader.setText(name);
+        holder.txtHeader.setText(capital);
         holder.txtHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 remove(position);
             }
+
+            @Override
+            public void onClick(View v){
+                add(position, item);
+            }
         });
 
         holder.txtFooter.setText("Footer: " + name);
+        holder.txtFooter.setText("Footer: " + capital);
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

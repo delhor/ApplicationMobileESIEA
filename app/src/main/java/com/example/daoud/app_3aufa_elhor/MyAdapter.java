@@ -1,5 +1,8 @@
 package com.example.daoud.app_3aufa_elhor;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.daoud.app_3aufa_elhor.retrofitgerrit.Country;
+import com.example.daoud.app_3aufa_elhor.retrofitgerrit.OnItemClickListener;
 
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Country> values;
+    private final OnItemClickListener listener;
 
+    public Context context;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -25,10 +31,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public ViewHolder(View v) {
             super(v);
             layout = v;
-            txtHeader = (TextView) v.findViewById(R.id.firstLine);
-            txtFooter = (TextView) v.findViewById(R.id.secondLine);
+            txtHeader =  v.findViewById(R.id.firstLine);
+            txtFooter =  v.findViewById(R.id.secondLine);
         }
+
+        public void bind(final Country item, final OnItemClickListener listener) {
+            txtHeader.setText(item.getName());
+            txtFooter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
+
     }
+
 
     public void add(int position, Country item) {
         values.add(position, item);
@@ -41,8 +59,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<Country> myDataset) {
+    public MyAdapter(List<Country> myDataset, OnItemClickListener listener) {
         values = myDataset;
+        this.listener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -62,19 +81,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        final Country country = values.get(position);
-        holder.txtHeader.setText(country.getName());
-        holder.txtHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                remove(position);
-            }
-        });
+        holder.bind(values.get(position), listener);
 
-        holder.txtFooter.setText("Footer: " + country.getName());
     }
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
